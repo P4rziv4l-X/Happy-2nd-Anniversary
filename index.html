@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2 ปีของเรา</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext x='16' y='24' font-size='26' text-anchor='middle'%3E%E2%9D%A4%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Charmonman:wght@400;700&family=Sarabun:wght@300;400;500;600&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+
+<!--
+============================================================
+  📝 วิธีแก้ไข (ทั้งหมดอยู่ในไฟล์นี้ไฟล์เดียว)
+============================================================
+  1) เลื่อนลงไปหา  const CONFIG = { ... }  ในแท็ก <script> ด้านล่างสุด
+     - ใส่ชื่อ, วันที่คบกัน, ไทม์ไลน์, แคปชั่นรูป, เพลง, ข้อความปิดท้าย
+  2) ใส่รูปภาพ: สร้างโฟลเดอร์ชื่อ "photos" ไว้ข้างไฟล์ html นี้
+     แล้วเอารูปไปใส่ ตั้งชื่อให้ตรงกับที่อ้างใน CONFIG (เช่น photos/1.jpg)
+     ถ้ายังไม่ใส่รูป เว็บจะโชว์กรอบหัวใจ placeholder ให้แทน ไม่พังแน่นอน
+  3) ใส่เพลง: สร้างโฟลเดอร์ชื่อ "music" ไว้ข้างไฟล์นี้ แล้วใส่ไฟล์ .mp3
+     ตั้งชื่อให้ตรงกับที่อ้างใน CONFIG (เช่น music/1.mp3)
+============================================================
+-->
+
+<style>
+  :root{
+    --paper: #FBF3EC;
+    --paper-deep: #F3E4D8;
+    --rose: #B23A55;
+    --rose-deep: #7C2740;
+    --blush: #F3D9DE;
+    --gold: #C9A24B;
+    --ink: #3A1E28;
+    --ink-soft: #6B4A54;
+    --shadow: 0 10px 30px rgba(124, 39, 64, 0.15);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y proximity; }
+
+  body{
+    margin:0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Sarabun', sans-serif;
+    overflow-x: hidden;
+  }
+
+  .script { font-family: 'Charmonman', cursive; }
+  .display { font-family: 'Charmonman', cursive; }
+
+  ::selection{ background: var(--blush); color: var(--rose-deep); }
+
+  /* focus visibility */
+  a:focus-visible, button:focus-visible, .card:focus-visible {
+    outline: 2px solid var(--rose-deep);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+    html{ scroll-snap-type: none; }
+  }
+
+  /* ============ ENVELOPE / SEAL OPENING ============ */
+  #envelope-screen{
+    position: fixed; inset: 0; z-index: 999;
+    background: radial-gradient(circle at 50% 40%, var(--paper-deep), var(--paper) 70%);
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column;
+    transition: opacity 0.9s ease, visibility 0.9s ease;
+  }
+  #envelope-screen.hidden{ opacity: 0; visibility: hidden; pointer-events: none; }
+
+  .envelope{
+    width: min(320px, 78vw);
+    aspect-ratio: 3/2;
+    position: relative;
+    cursor: pointer;
+    filter: drop-shadow(0 18px 30px rgba(124,39,64,0.25));
+  }
+  .env-body{
+    position:absolute; inset:0;
+    background: var(--rose);
+    border-radius: 10px;
+  }
+  .env-flap{
+    position:absolute; top:0; left:0; width:100%; height:60%;
+    background: var(--rose-deep);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    transform-origin: top center;
+    transition: transform 0.8s cubic-bezier(.6,-0.2,.3,1.4);
+    border-radius: 10px 10px 0 0;
+  }
+  .envelope.open .env-flap{ transform: rotateX(180deg); }
+  .seal{
+    position:absolute; top:50%; left:50%; transform: translate(-50%,-50%);
+    width: 58px; height: 58px; border-radius:50%;
+    background: var(--gold);
+    display:flex; align-items:center; justify-content:center;
+    color: var(--rose-deep); font-size: 26px;
+    box-shadow: inset 0 -4px 6px rgba(0,0,0,0.25), 0 4px 10px rgba(0,0,0,0.25);
+    transition: transform 0.4s ease, opacity 0.4s ease;
+    z-index: 2;
+  }
+  .envelope.open .seal{ transform: translate(-50%,-50%) scale(0); opacity: 0; }
+  .envelope:hover .seal{ transform: translate(-50%,-50%) scale(1.08); }
+
+  .env-hint{
+    margin-top: 28px; color: var(--ink-soft); font-size: 15px; letter-spacing: 0.5px;
+  }
+  .env-title{
+    font-size: clamp(22px, 5vw, 32px);
+    color: var(--rose-deep);
+    margin-bottom: 6px;
+    text-align: center;
+  }
+
+  /* ============ MAIN PAGE ============ */
+  main{ display:none; }
+  main.show{ display:block; animation: fadein 1s ease; }
+  @keyframes fadein{ from{opacity:0; transform: translateY(10px);} to{opacity:1; transform:translateY(0);} }
+
+  section{ padding: 90px 20px; position: relative; scroll-snap-align: start; scroll-snap-stop: normal; }
+  .wrap{ max-width: 880px; margin: 0 auto; }
+
+  .eyebrow{
+    text-transform: uppercase; letter-spacing: 3px; font-size: 12px;
+    color: var(--rose); font-weight: 600; margin-bottom: 10px; text-align:center;
+  }
+  h2.section-title{
+    font-family:'Charmonman', cursive;
+    font-size: clamp(30px, 5vw, 46px);
+    color: var(--rose-deep);
+    text-align: center;
+    margin: 0 0 46px;
+  }
+
+  /* --- HERO --- */
+  #hero{
+    min-height: 100vh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center;
+    background:
+      radial-gradient(circle at 20% 20%, var(--blush) 0, transparent 40%),
+      radial-gradient(circle at 80% 80%, var(--blush) 0, transparent 40%),
+      var(--paper);
+  }
+  .hero-names{
+    font-family:'Charmonman', cursive;
+    font-size: clamp(38px, 8vw, 72px);
+    color: var(--rose-deep);
+    line-height: 1.1;
+  }
+  .hero-sub{ color: var(--ink-soft); margin-top: 10px; font-size: 17px; }
+
+  .counter{
+    margin-top: 46px;
+    display:flex; gap: 14px; flex-wrap: wrap; justify-content:center;
+  }
+  .counter .box{
+    background: white; border-radius: 14px; padding: 18px 20px;
+    box-shadow: var(--shadow); min-width: 84px;
+  }
+  .counter .num{
+    font-family:'Playfair Display', serif; font-style: italic;
+    font-size: 30px; color: var(--rose); display:block;
+  }
+  .counter .label{ font-size: 12px; color: var(--ink-soft); margin-top: 4px; }
+
+  .heartbeat{
+    margin-top: 30px; font-size: 13px; color: var(--ink-soft);
+  }
+  .heartbeat span{ display:inline-block; animation: beat 1.1s ease-in-out infinite; }
+  @keyframes beat{ 0%,100%{transform:scale(1);} 25%{transform:scale(1.25);} 40%{transform:scale(1);} }
+
+  .scroll-cue{
+    position:absolute; bottom: 30px; left:50%; transform: translateX(-50%);
+    font-size: 12px; color: var(--ink-soft); letter-spacing: 2px;
+  }
+
+  /* --- GALLERY --- */
+  .gallery{
+    display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 26px;
+  }
+  .polaroid{
+    background:white; padding: 14px 14px 40px; border-radius: 4px;
+    box-shadow: var(--shadow);
+    transform: rotate(var(--r, -2deg));
+    transition: transform 0.3s ease;
+  }
+  .polaroid:nth-child(2n){ --r: 2deg; }
+  .polaroid:nth-child(3n){ --r: -1deg; }
+  .polaroid:hover{ transform: rotate(0deg) scale(1.03); }
+  .polaroid .frame{
+    aspect-ratio: 1/1; border-radius: 2px; overflow:hidden;
+    background: var(--blush);
+    display:flex; align-items:center; justify-content:center;
+    position: relative;
+  }
+  .polaroid img{ width:100%; height:100%; object-fit: cover; display:block; }
+  .polaroid .frame.no-photo::after{
+    content: '♥'; color: var(--rose); font-size: 40px;
+  }
+  .polaroid .cap{
+    font-family:'Charmonman', cursive; text-align:center; margin-top: 12px;
+    color: var(--ink-soft); font-size: 16px;
+  }
+
+  /* --- PLAYER --- */
+  .player{
+    background: white; border-radius: 20px; box-shadow: var(--shadow);
+    padding: 26px; max-width: 480px; margin: 0 auto;
+  }
+  .track-name{ font-weight:600; }
+  .track-artist{ color: var(--ink-soft); font-size: 13px; margin-bottom: 14px; }
+  .player audio{ width: 100%; }
+  .track-list{ margin-top: 18px; display:flex; flex-direction:column; gap:8px; }
+  .track-list button{
+    all: unset; cursor:pointer; padding: 10px 14px; border-radius: 10px;
+    display:flex; justify-content:space-between; font-size: 14px; color: var(--ink);
+  }
+  .track-list button:hover, .track-list button.active{ background: var(--blush); }
+  .track-hint{ font-size: 12px; color: var(--ink-soft); margin-top: 10px; }
+  #spotify-embed-wrap iframe{ width:100%; border-radius: 14px; border:none; }
+
+  /* --- GAME --- */
+  .game-wrap{ text-align:center; }
+  .game-status{ margin-bottom: 18px; color: var(--ink-soft); font-size: 14px; }
+  .game-grid{
+    display:grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+    max-width: 420px; margin: 0 auto;
+  }
+  .game-card{
+    aspect-ratio: 1/1; border-radius: 12px; background: var(--rose);
+    display:flex; align-items:center; justify-content:center;
+    font-size: 26px; cursor:pointer; color: transparent;
+    box-shadow: var(--shadow); overflow: hidden; position: relative;
+    transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
+  }
+  .game-card.flipped, .game-card.matched{ background: white; color: var(--rose-deep); }
+  .game-card.matched{ background: var(--blush); cursor: default; }
+  .game-card img{
+    width:100%; height:100%; object-fit: cover; display:none;
+  }
+  .game-card.flipped img, .game-card.matched img{ display:block; }
+  .game-card .back-icon{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
+  .game-card.flipped .back-icon, .game-card.matched .back-icon{ display:none; }
+  .game-card.no-photo.flipped, .game-card.no-photo.matched{ color: var(--rose-deep); }
+  .game-card .no-photo-mark{ display:none; font-size: 30px; }
+  .game-card.no-photo.flipped .no-photo-mark, .game-card.no-photo.matched .no-photo-mark{ display:block; }
+  .game-win{
+    margin-top: 22px; font-family:'Charmonman', cursive; font-size: 26px; color: var(--rose-deep);
+    display:none;
+  }
+  .game-win.show{ display:block; animation: fadein 0.6s ease; }
+  .reset-btn{
+    margin-top: 16px; border:none; background: var(--rose); color:white;
+    padding: 10px 22px; border-radius: 999px; cursor:pointer; font-size: 14px;
+  }
+  .reset-btn:hover{ background: var(--rose-deep); }
+
+  /* --- CLOSING LETTER --- */
+  #letter{
+    background: var(--paper-deep);
+    text-align:center;
+  }
+  .letter-card{
+    max-width: 600px; margin: 0 auto; background: white; border-radius: 20px;
+    box-shadow: var(--shadow); padding: 50px 36px; position: relative;
+  }
+  .letter-text{
+    font-size: 18px; line-height: 2; color: var(--ink); white-space: pre-line;
+  }
+  .letter-sign{
+    margin-top: 26px; font-family:'Charmonman', cursive; font-size: 26px; color: var(--rose);
+  }
+  footer{
+    text-align:center; padding: 30px; color: var(--ink-soft); font-size: 12px;
+  }
+
+  /* --- Scroll reveal --- */
+  .reveal{
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.9s cubic-bezier(.2,.7,.2,1), transform 0.9s cubic-bezier(.2,.7,.2,1);
+  }
+  .reveal.visible{ opacity: 1; transform: translateY(0); }
+  .reveal-group .reveal:nth-child(1){ transition-delay: 0s; }
+  .reveal-group .reveal:nth-child(2){ transition-delay: 0.08s; }
+  .reveal-group .reveal:nth-child(3){ transition-delay: 0.16s; }
+  .reveal-group .reveal:nth-child(4){ transition-delay: 0.24s; }
+  .reveal-group .reveal:nth-child(5){ transition-delay: 0.32s; }
+  .reveal-group .reveal:nth-child(6){ transition-delay: 0.4s; }
+
+  /* --- Floating hearts --- */
+  #floating-hearts{
+    position: fixed; inset: 0; pointer-events: none; z-index: 50; overflow: hidden;
+  }
+  .float-heart{
+    position: absolute; bottom: -40px; color: var(--rose);
+    opacity: 0.55; will-change: transform, opacity;
+    animation-name: floatUp; animation-timing-function: linear; animation-fill-mode: forwards;
+  }
+  @keyframes floatUp{
+    0%{ transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+    10%{ opacity: 0.6; }
+    100%{ transform: translateY(-110vh) translateX(var(--drift, 30px)) rotate(360deg); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================== ENVELOPE OPENING SCREEN ===================== -->
+<div id="envelope-screen">
+  <div class="env-title script">มีจดหมายส่งถึงไอ่หมู~~</div>
+  <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="เปิดจดหมาย">
+    <div class="env-flap"></div>
+    <div class="env-body"></div>
+    <div class="seal">💖</div>
+  </div>
+  <div class="env-hint">แตะที่ตราประทับเพื่อเปิดอ่าน</div>
+</div>
+
+<!-- ===================== FLOATING HEARTS ===================== -->
+<div id="floating-hearts" aria-hidden="true"></div>
+
+<!-- ===================== MAIN CONTENT ===================== -->
+<main id="main">
+
+  <section id="hero">
+    <div class="hero-names" id="hero-names">Happy 2nd Anniversary</div>
+    <div class="hero-sub" id="hero-sub">ครบรอบ 2 ปีของเรา</div>
+
+    <div class="counter" id="counter">
+      <div class="box"><span class="num" id="c-years">0</span><span class="label">ปี</span></div>
+      <div class="box"><span class="num" id="c-months">0</span><span class="label">เดือน</span></div>
+      <div class="box"><span class="num" id="c-days">0</span><span class="label">วัน</span></div>
+      <div class="box"><span class="num" id="c-hours">0</span><span class="label">ชม.</span></div>
+      <div class="box"><span class="num" id="c-mins">0</span><span class="label">นาที</span></div>
+      <div class="box"><span class="num" id="c-secs">0</span><span class="label">วินาที</span></div>
+    </div>
+
+    <div class="heartbeat"><span>💖</span> ที่เราอยู่ด้วยกันมา</div>
+    <div class="scroll-cue">เลื่อนลงเพื่ออ่านต่อ ↓</div>
+  </section>
+
+  <section id="gallery-section">
+    <div class="wrap">
+      <div class="eyebrow reveal">ภาพความทรงจำ</div>
+      <h2 class="section-title reveal">ภาพของเราที่เก็บไว้</h2>
+      <div class="gallery reveal-group" id="gallery"></div>
+    </div>
+  </section>
+
+  <section id="music-section">
+    <div class="wrap">
+      <div class="eyebrow reveal">เพลง</div>
+      <h2 class="section-title reveal">เพลงให้เธอฟังงงงงง</h2>
+      <div class="player reveal">
+        <div id="spotify-embed-wrap"></div>
+        <div class="track-hint">🎧🎶</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="game-section">
+    <div class="wrap game-wrap">
+      <div class="eyebrow reveal">มีเกมให้เล่นนิดนึงงง</div>
+      <h2 class="section-title reveal">จับคู่ภาพ</h2>
+      <div class="game-status reveal" id="game-status">พลิกการ์ดเพื่อหาภาพที่เข้าคู่กัน</div>
+      <div class="game-grid reveal" id="game-grid"></div>
+      <div class="game-win" id="game-win">เก่งมาก! ไอ่หมู~ ♥</div>
+      <button class="reset-btn reveal" id="reset-game">เล่นใหม่</button>
+    </div>
+  </section>
+
+  <section id="letter">
+    <div class="wrap">
+      <div class="eyebrow reveal">ข้อความสุดท้าย</div>
+      <h2 class="section-title reveal">ถึงหมู~</h2>
+      <div class="letter-card reveal">
+        <div class="letter-text" id="letter-text"></div>
+        <div class="letter-sign" id="letter-sign"></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>😛😛</footer>
+</main>
+
+<script>
+/* ============================================================
+   🔧 CONFIG — แก้ไขทุกอย่างตรงนี้ที่เดียว
+============================================================ */
+const CONFIG = {
+  // ชื่อคู่รัก
+  you: "Happy 2nd Anniversary",
+  partner: "💖",
+
+  // วันที่เริ่มคบกัน (YYYY-MM-DDTHH:mm:ss) ปรับเวลาได้ถ้าจำได้แม่นยำ
+  startDate: "2024-07-25T17:00:00",
+
+  // รูปภาพความทรงจำ - ใส่ path รูปในโฟลเดอร์ photos/ (ถ้ายังไม่มีรูป ปล่อย src ว่างได้ จะขึ้น placeholder หัวใจแทน)
+  photos: [
+    { src: "photos/1.jpg", caption: "😛" },
+    { src: "photos/2.jpg", caption: "😙" },
+    { src: "photos/3.jpg", caption: "😴" },
+    { src: "photos/4.jpg", caption: "😜" },
+    { src: "photos/5.jpg", caption: "😋" },
+    { src: "photos/6.jpg", caption: "🐷" }
+  ],
+
+  // เพลย์ลิสต์ Spotify
+  // วิธีหาลิงก์: เปิดเพลย์ลิสต์/เพลงใน Spotify > กด "..." > Share > Embed playlist/track > คัดลอกเฉพาะ src="..." มาวางตรงนี้
+  // ตัวอย่าง: "https://open.spotify.com/embed/playlist/XXXXXXXXXXXXXXXXX?utm_source=generator"
+  spotifyEmbedUrl: "https://open.spotify.com/embed/playlist/1CANMDoiLhjmpQtsFSq1ZU?utm_source=generator&si=51538bfa901346ba",
+
+  // รูปสำหรับมินิเกมจับคู่ (ใส่ได้พอดี 8 รูป จะได้การ์ด 16 ใบจับคู่กัน)
+  // ถ้าช่องไหนยังไม่มีรูป ใส่ path ไว้ก่อนได้เลย พอยังไม่มีไฟล์จริงจะโชว์ไอคอนหัวใจแทน
+  gamePhotos: [
+    "photos/1.jpg", "photos/2.jpg", "photos/3.jpg", "photos/4.jpg",
+    "photos/5.jpg", "photos/6.jpg", "photos/7.jpg", "photos/8.jpg"
+  ],
+
+  // ข้อความปิดท้าย
+  letter: `Happy 2nd Anniversary💖
+สุขสันต์วันครบรอบ 2 ปีนะ ขอบคุณที่ยังอยู่ด้วยกัน
+ขอบคุณสำหรับทุกรอยยิ้ม ทุกความทรงจำ
+มีความสุขมากก ขอบคุณที่เข้ามาเป็นความสุข
+ถึงจะไม่ค่อยได้เจอนานเท่าไหร่ก็ยังรักเหมือนเดิม
+เข้าใจว่ายุ่งกับเรียนแต่วันไหนว่างๆมาคุยกันบ้างงคิดถึงงงง
+คิดถึงเสมอออ รอได้เจอตลอดดด
+พร้อมอยู่ตรงนี้ให้กำลังใจเสมอออ
+รูปที่มีอาจจะเก่าไปนิดนึงง หรือซ้ำ ไม่ค่อยได้ไปไหนกันเลยยTT
+
+รักเธอมากนะ อยู่ด้วยกันอีกนานๆ 💕`,
+  letterSign: "รักเสมออออ"
+};
+
+/* ============================================================
+   ไม่ต้องแก้ด้านล่างนี้ (ยกเว้นอยากปรับพฤติกรรม)
+============================================================ */
+
+// --- Envelope open ---
+const envScreen = document.getElementById('envelope-screen');
+const envelope = document.getElementById('envelope');
+const main = document.getElementById('main');
+function openEnvelope(){
+  envelope.classList.add('open');
+  setTimeout(() => {
+    envScreen.classList.add('hidden');
+    main.classList.add('show');
+    initReveal();
+  }, 750);
+}
+envelope.addEventListener('click', openEnvelope);
+envelope.addEventListener('keydown', (e) => { if(e.key === 'Enter' || e.key === ' ') openEnvelope(); });
+
+// --- Hero names ---
+document.getElementById('hero-names').textContent = `${CONFIG.you}  ${CONFIG.partner}`;
+
+// --- Live counter ---
+const start = new Date(CONFIG.startDate);
+function updateCounter(){
+  const now = new Date();
+  let diffMs = now - start;
+  if (diffMs < 0) diffMs = 0;
+
+  let years = now.getFullYear() - start.getFullYear();
+  let months = now.getMonth() - start.getMonth();
+  let days = now.getDate() - start.getDate();
+  let hours = now.getHours() - start.getHours();
+  let mins = now.getMinutes() - start.getMinutes();
+  let secs = now.getSeconds() - start.getSeconds();
+
+  if (secs < 0){ secs += 60; mins--; }
+  if (mins < 0){ mins += 60; hours--; }
+  if (hours < 0){ hours += 24; days--; }
+  if (days < 0){
+    const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+    days += prevMonth.getDate();
+    months--;
+  }
+  if (months < 0){ months += 12; years--; }
+
+  document.getElementById('c-years').textContent = Math.max(years,0);
+  document.getElementById('c-months').textContent = Math.max(months,0);
+  document.getElementById('c-days').textContent = Math.max(days,0);
+  document.getElementById('c-hours').textContent = String(Math.max(hours,0)).padStart(2,'0');
+  document.getElementById('c-mins').textContent = String(Math.max(mins,0)).padStart(2,'0');
+  document.getElementById('c-secs').textContent = String(Math.max(secs,0)).padStart(2,'0');
+}
+updateCounter();
+setInterval(updateCounter, 1000);
+
+// --- Gallery render ---
+const galleryEl = document.getElementById('gallery');
+CONFIG.photos.forEach(p => {
+  const div = document.createElement('div');
+  div.className = 'polaroid reveal';
+  div.innerHTML = `
+    <div class="frame">
+      <img src="${p.src}" alt="${p.caption}"
+        onerror="this.style.display='none'; this.parentElement.classList.add('no-photo')">
+    </div>
+    <div class="cap">${p.caption}</div>`;
+  galleryEl.appendChild(div);
+});
+
+// --- Music player (Spotify embed) ---
+const spotifyWrap = document.getElementById('spotify-embed-wrap');
+if (CONFIG.spotifyEmbedUrl) {
+  const iframe = document.createElement('iframe');
+  iframe.src = CONFIG.spotifyEmbedUrl;
+  iframe.height = "352";
+  iframe.allow = "autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture";
+  iframe.loading = "lazy";
+  spotifyWrap.appendChild(iframe);
+}
+
+// --- Memory match game ---
+const gameGrid = document.getElementById('game-grid');
+const gameStatus = document.getElementById('game-status');
+const gameWin = document.getElementById('game-win');
+const resetBtn = document.getElementById('reset-game');
+const gamePhotos = CONFIG.gamePhotos.slice(0, 8);
+
+let cards = [], flipped = [], matchedCount = 0, lock = false;
+
+function shuffle(arr){
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i+1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function buildGame(){
+  gameGrid.innerHTML = '';
+  gameWin.classList.remove('show');
+  flipped = []; matchedCount = 0; lock = false;
+  cards = shuffle([...gamePhotos, ...gamePhotos]);
+  gameStatus.textContent = 'พลิกการ์ดเพื่อหาภาพที่เข้าคู่กัน';
+
+  cards.forEach((src, i) => {
+    const cardEl = document.createElement('div');
+    cardEl.className = 'game-card';
+    cardEl.dataset.src = src;
+    cardEl.dataset.index = i;
+    cardEl.innerHTML = `
+      <div class="back-icon">♥</div>
+      <span class="no-photo-mark">♥</span>
+      <img src="${src}" alt="ภาพความทรงจำ"
+        onerror="this.style.display='none'; this.closest('.game-card').classList.add('no-photo')">
+    `;
+    cardEl.setAttribute('role', 'button');
+    cardEl.setAttribute('tabindex', '0');
+    cardEl.addEventListener('click', () => flipCard(cardEl));
+    cardEl.addEventListener('keydown', (e) => { if(e.key==='Enter'||e.key===' ') flipCard(cardEl); });
+    gameGrid.appendChild(cardEl);
+  });
+}
+
+function flipCard(cardEl){
+  if (lock || cardEl.classList.contains('flipped') || cardEl.classList.contains('matched')) return;
+  cardEl.classList.add('flipped');
+  flipped.push(cardEl);
+
+  if (flipped.length === 2){
+    lock = true;
+    const [a, b] = flipped;
+    if (a.dataset.src === b.dataset.src){
+      a.classList.add('matched'); b.classList.add('matched');
+      matchedCount++;
+      flipped = []; lock = false;
+      if (matchedCount === gamePhotos.length){
+        gameStatus.textContent = 'จับคู่ครบทุกใบแล้ว!';
+        gameWin.classList.add('show');
+      }
+    } else {
+      setTimeout(() => {
+        a.classList.remove('flipped'); b.classList.remove('flipped');
+        flipped = []; lock = false;
+      }, 700);
+    }
+  }
+}
+resetBtn.addEventListener('click', buildGame);
+buildGame();
+
+// --- Scroll reveal ---
+function initReveal(){
+  const els = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting){
+        e.target.classList.add('visible');
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+  els.forEach(el => obs.observe(el));
+}
+
+// --- Floating hearts ambient effect ---
+const heartsWrap = document.getElementById('floating-hearts');
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const heartChars = ['♥','♡'];
+
+function spawnHeart(){
+  const h = document.createElement('div');
+  h.className = 'float-heart';
+  h.textContent = heartChars[Math.floor(Math.random() * heartChars.length)];
+  const size = 14 + Math.random() * 22;
+  const left = Math.random() * 100;
+  const duration = 7 + Math.random() * 6;
+  const drift = (Math.random() * 80 - 40) + 'px';
+  h.style.left = left + 'vw';
+  h.style.fontSize = size + 'px';
+  h.style.setProperty('--drift', drift);
+  h.style.animationDuration = duration + 's';
+  heartsWrap.appendChild(h);
+  setTimeout(() => h.remove(), duration * 1000 + 200);
+}
+
+if (!reduceMotion){
+  setInterval(spawnHeart, 900);
+  for (let i = 0; i < 4; i++) setTimeout(spawnHeart, i * 300);
+}
+
+// --- Letter ---
+document.getElementById('letter-text').textContent = CONFIG.letter;
+document.getElementById('letter-sign').textContent = `${CONFIG.letterSign} — ${CONFIG.you}`;
+</script>
+</body>
+</html>
